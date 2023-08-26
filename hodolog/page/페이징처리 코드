@@ -1,0 +1,34 @@
+   public List<PostResponse> getList(int page){
+        Pageable pageable = PageRequest.of(page,5);
+        return postRepository.findAll(pageable).stream()
+                .map(PostResponse::new)
+                .collect(Collectors.toList());
+    }
+
+
+------------------------------------------------------
+
+ @Test
+    @DisplayName("글 1페이지 조회 테스트")
+    void test3(){
+        //given
+        List<Post> requestPosts = IntStream.range(0,30)
+                .mapToObj(i->{
+                    Post.builder()
+                            .title("호돌맨 제목 - "+i)
+                            .content("반포자이 - "+i)
+                            .build();
+                })
+                .collect(Collectors.toList());
+        //for(int i=0;i<30;i++)과 동일하다.
+
+        postRepository.saveAll(requestPosts);
+
+
+
+        //when
+        List<PostResponse> posts = postService.getList(1L);
+        //then
+        assertEquals(2L,posts.size());
+
+    }
