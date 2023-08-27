@@ -1,0 +1,11 @@
+  public List<PostResponse> getList(int page){
+        Pageable pageable = PageRequest.of(page,5);
+        return postRepository.findAll(pageable).stream()
+                .map(post->PostResponse.builder()
+                        .id(post.getId())
+                        .title(post.getTitle())
+                        .build())
+                .collect(Collectors.toList());
+    }
+
+※ map과 builder, stream을 사용해서 조회함.
