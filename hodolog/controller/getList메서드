@@ -9,11 +9,29 @@
     }
 
 ※ builder, stream을 사용해서 조회함.
-
-stream.map이란??
+----------------------------------------------------
+질문 1 . stream.map이란??
 
 stream.map()은 스트림 내의 각 요소에 대해 지정된 함수를 적용하여 새로운 요소로 변환하는 작업을 수행합니다.
-위의 코드에서 .map(post->PostResponse.builder().id(post.getId()).title(post.getTitle()).build()) 부분은 postRepository.findAll(pageable)로부터 가져온 List<Post> 객체를 스트림으로 변환한 후, 각각의 Post 객체에 대해 실행되는 람다식입니다.
-람다식인 post->PostResponse.builder().id(post.getId()).title(post.getTitle()).build()은 각각의 Post 객체를 입력으로 받아서, 해당 객체의 id와 title 필드 값을 사용하여 새로운 PostResponse 객체를 생성하는 역할을 합니다.
-즉, .map() 메소드는 스트림 내의 모든 요소에 대해 지정된 함수를 실행하고, 그 결과로 반환된 요소들을 새로운 스트림으로 만듭니다. 이 경우에는 List<Post>가 List<PostResponse>로 변환되어 반환됩니다.
+위의 코드에서 .map(post->PostResponse.builder().id(post.getId()).title(post.getTitle()).build()) 부분은 
+postRepository.findAll(pageable)로부터 가져온 List<Post> 객체를 스트림으로 변환한 후, 각각의 Post 객체에 대해 실행되는 람다식입니다.
+람다식인 post->PostResponse.builder().id(post.getId()).title(post.getTitle()).build()은 각각의 Post 객체를 입력으로 받아서, 
+해당 객체의 id와 title 필드 값을 사용하여 새로운 PostResponse 객체를 생성하는 역할을 합니다.
+즉, .map() 메소드는 스트림 내의 모든 요소에 대해 지정된 함수를 실행하고, 그 결과로 반환된 요소들을 새로운 스트림으로 만듭니다.
+이 경우에는 List<Post>가 List<PostResponse>로 변환되어 반환됩니다.
 결과적으로 위 코드는 게시물 목록을 가져와서 각각의 게시물을 PostResponse 형태로 변환한 후 리스트 형태로 반환하는 기능을 수행합니다.
+
+----------------------------------------------------
+
+질문 2 . 왜 Post를 PostResponse로 변환하는 거지??
+Post와 PostResponse는 서로 다른 역할을 가진 클래스입니다.
+
+Post: 게시물의 원본 데이터를 담고 있는 클래스로, 게시물의 실제 데이터와 관련된 필드 및 메소드를 포함합니다. 
+예를 들어, 게시물의 제목(title), 내용(content), 작성자(author) 등이 Post 클래스의 필드로 정의될 수 있습니다.
+PostResponse: 클라이언트에게 전달되는 응답 형태로 변환된 게시물 데이터를 담고 있는 클래스입니다. 주로 API 응답이나 뷰(View)에서 사용됩니다. 
+이 클래스는 클라이언트에게 필요한 최소한의 정보만을 포함하며, 불필요한 정보를 숨기거나 변환하여 보다 효율적인 통신을 할 수 있도록 합니다.
+위 코드에서 .map(post->PostResponse.builder().id(post.getId()).title(post.getTitle()).build()) 부분은 
+각각의 Post 객체를 가져와서 해당 객체에서 필요한 정보(id, title)만 추출하여 새로운 PostResponse 객체를 생성하는 것입니다. 이렇게 하면 클라이언트에게 
+전달되는 응답 데이터가 원본 데이터보다 가벼워지고, 필요한 정보만 포함되어 효율적인 통신이 가능해집니다.
+
+따라서, 위 코드에서는 PostResponse 객체가 사용되는 이유는 API 응답 형태나 뷰에서 필요한 최소한의 정보만을 전달하기 위해서입니다.
